@@ -1,0 +1,15 @@
+---
+- name: Playbook de Demo para Webhook EDA
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Imprimir mensaje de bienvenida desde EDA
+      ansible.builtin.debug:
+        msg: "¡Evento webhook recibido por EDA! Mensaje: {{ eda_event.payload.message | default('No se proporcionó un mensaje específico.') }}"
+
+    - name: Mostrar todos los datos del evento (para depuración)
+      ansible.builtin.debug:
+        var: eda_event
+                        
