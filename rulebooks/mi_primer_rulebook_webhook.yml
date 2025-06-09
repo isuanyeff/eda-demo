@@ -1,6 +1,7 @@
 ---
-- name: Escuchar eventos de webhook y ejecutar un playbook (desde Git)
+- name: Escuchar eventos de webhook y ejecutar un playbook
   hosts: localhost
+  gather_facts: false
 
   sources:
     - name: Escuchar en un webhook en el puerto 5000
@@ -13,7 +14,11 @@
       condition: event.payload.message is defined and event.payload.message == "accion_requerida"
       action:
         run_playbook:
-          # Usamos una ruta explícita relativa a la raíz del proyecto
-          name: "{{ ansible_rulebook.project_dir }}/saludo_webhook_playbook.yml"
-          inventory: "{{ ansible_rulebook.project_dir }}/inventory.yml" 
-          # ↑↑↑ CORRECCIÓN CLAVE ↑↑↑
+          name: saludo_webhook_playbook.yml
+          inventory: inventory.yml
+
+    - name: Depurar cualquier otro evento recibido (opcional)
+      condition: event.payload is defined
+      action:
+        debug:
+          msg: "Evento webhook genérico recibido. Evento completo: {{ event }}"

@@ -12,4 +12,3 @@
     - name: Mostrar todos los datos del evento (para depuración)
       ansible.builtin.debug:
         var: eda_event
-                        
