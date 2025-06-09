@@ -18,6 +18,7 @@
       action:
         run_playbook:
           name: saludo_webhook_playbook.yml
+          inventory: inventory.yml
           # Opcional: Puedes pasar variables extra al playbook así:
           # extra_vars:
           #   origen_del_evento: "Webhook Demo Cap2"
