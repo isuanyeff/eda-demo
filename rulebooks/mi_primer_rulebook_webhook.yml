@@ -1,31 +1,19 @@
 ---
-- name: Escuchar eventos de webhook y ejecutar un playbook
-  hosts: localhost # Se refiere al host donde se ejecuta el source plugin de EDA
-  gather_facts: false
+- name: Escuchar eventos de webhook y ejecutar un playbook (desde Git)
+  hosts: localhost
 
   sources:
     - name: Escuchar en un webhook en el puerto 5000
       ansible.eda.webhook:
-        host: 0.0.0.0 # Escucha en todas las interfaces de red
-        port: 5000   # Puerto para el webhook (asegúrate que no esté en uso y permitido por el firewall)
-        # Opcional: añadir un token para seguridad básica
-        # token: "miTokenSecreto123" 
-        # CUIDADO: Si usas token, deberás enviarlo en las cabeceras de tu petición POST.
+        host: 0.0.0.0
+        port: 5000
 
   rules:
     - name: Reaccionar cuando el mensaje es 'accion_requerida'
       condition: event.payload.message is defined and event.payload.message == "accion_requerida"
       action:
         run_playbook:
-          name: saludo_webhook_playbook.yml
-          inventory: inventory.yml
-          # Opcional: Puedes pasar variables extra al playbook así:
-          # extra_vars:
-          #   origen_del_evento: "Webhook Demo Cap2"
-
-    - name: Depurar cualquier otro evento recibido (opcional)
-      condition: event.payload is defined # Se activa si hay cualquier payload
-      action:
-        debug:
-          msg: "Evento webhook genérico recibido. Evento completo: {{ event }}"
-                        
+          # Usamos una ruta explícita relativa a la raíz del proyecto
+          name: "{{ ansible_rulebook.project_dir }}/saludo_webhook_playbook.yml"
+          inventory: "{{ ansible_rulebook.project_dir }}/inventory.yml" 
+          # ↑↑↑ CORRECCIÓN CLAVE ↑↑↑
